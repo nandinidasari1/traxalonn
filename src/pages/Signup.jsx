@@ -283,11 +283,11 @@ function getPasswordStrength(password) {
   return { label: "Strong", color: "bg-green-500", textColor: "text-green-400", width: "w-full" };
 }
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://traxalon.onrender.com";
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5001";
 const OTP_RESEND_COOLDOWN = 60;
 
 export default function Signup() {
-  const { signup } = useAuth();
+  const { signup, login } = useAuth();
   const navigate = useNavigate();
 
   const [step, setStep] = useState("form"); // "form" | "otp" | "creating"
@@ -345,28 +345,53 @@ export default function Signup() {
   }
 
   // ── Step 2: verify OTP then create account ────────────────────
+  // async function handleVerifyAndCreate(e) {
+  //   e.preventDefault();
+  //   setError(""); setInfo("");
+  //   if (!otpValue || otpValue.length !== 6) return setError("Please enter the 6-digit OTP.");
+  //   setLoading(true);
+  //   try {
+  //     const res = await fetch(`${BACKEND_URL}/api/auth/verify-otp`, {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({ email: form.email, otp: otpValue }),
+  //     });
+  //     const data = await res.json();
+  //     if (!res.ok) throw new Error(data.error || "OTP verification failed.");
+  //     setStep("creating");
+  //     await signup(form.email, form.password, form.displayName, form.badgeId, form.department);
+  //     navigate("/dashboard");
+  //   } catch (err) {
+  //     setStep("otp");
+  //     setError(err.message || "Verification failed. Please try again.");
+  //   }
+  //   setLoading(false);
+  // }
+
   async function handleVerifyAndCreate(e) {
-    e.preventDefault();
-    setError(""); setInfo("");
-    if (!otpValue || otpValue.length !== 6) return setError("Please enter the 6-digit OTP.");
-    setLoading(true);
-    try {
-      const res = await fetch(`${BACKEND_URL}/api/auth/verify-otp`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: form.email, otp: otpValue }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "OTP verification failed.");
-      setStep("creating");
-      await signup(form.email, form.password, form.displayName, form.badgeId, form.department);
-      navigate("/dashboard");
-    } catch (err) {
-      setStep("otp");
-      setError(err.message || "Verification failed. Please try again.");
-    }
-    setLoading(false);
+  e.preventDefault();
+  setError(""); setInfo("");
+  if (!otpValue || otpValue.length !== 6) return setError("Please enter the 6-digit OTP.");
+  setLoading(true);
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/auth/verify-otp`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: form.email, otp: otpValue }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "OTP verification failed.");
+    setStep("creating");
+    await signup(form.email, form.password, form.displayName, form.badgeId, form.department);
+    // Now sign them in since OTP already proved email ownership
+    await login(form.email, form.password);  // ← ADD THIS
+    navigate("/dashboard");
+  } catch (err) {
+    setStep("otp");
+    setError(err.message || "Verification failed. Please try again.");
   }
+  setLoading(false);
+}
 
   // ── Resend OTP ────────────────────────────────────────────────
   async function handleResendOtp() {

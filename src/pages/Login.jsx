@@ -17,26 +17,49 @@ export default function Login() {
   const [forgotStatus, setForgotStatus] = useState("");
   const [forgotLoading, setForgotLoading] = useState(false);
 
+  // async function handleSubmit(e) {
+  //   e.preventDefault();
+  //   setError("");
+  //   setLoading(true);
+  //   try {
+  //     const freshUser = await login(email, password);
+
+  //     if (!freshUser.emailVerified) {
+  //       await auth.signOut();
+  //       setError("Please verify your email before logging in. Check your inbox.");
+  //       setLoading(false);
+  //       return;
+  //     }
+
+  //     navigate("/dashboard");
+  //   } catch (err) {
+  //     setError("Invalid credentials. Please check your email and password.");
+  //   }
+  //   setLoading(false);
+  // }
+
   async function handleSubmit(e) {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
-    try {
-      const freshUser = await login(email, password);
-
-      if (!freshUser.emailVerified) {
-        await auth.signOut();
-        setError("Please verify your email before logging in. Check your inbox.");
-        setLoading(false);
-        return;
-      }
-
-      navigate("/dashboard");
-    } catch (err) {
+  e.preventDefault();
+  setError("");
+  setLoading(true);
+  try {
+    await login(email, password);
+    navigate("/dashboard");
+  } catch (err) {
+    if (err.message === "Email not verified") {
+      setError("Please verify your email before logging in. Check your inbox.");
+    } else if (
+      err.code === "auth/wrong-password" ||
+      err.code === "auth/user-not-found" ||
+      err.code === "auth/invalid-credential"
+    ) {
       setError("Invalid credentials. Please check your email and password.");
+    } else {
+      setError(err.message);
     }
-    setLoading(false);
   }
+  setLoading(false);
+}
 
   async function handleForgotPassword(e) {
     e.preventDefault();

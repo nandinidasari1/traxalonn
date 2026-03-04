@@ -40,7 +40,7 @@ function parseDevice(ua = "") {
 function getClientIP(req) {
     const forwarded = req.headers["x-forwarded-for"];
     if (forwarded) return forwarded.split(",")[0].trim();
-    return req.socket ? .remoteAddress || req.ip || "Unknown";
+    return req.socket?.remoteAddress || req.ip || "Unknown";
 }
 
 // ── Reverse geocode GPS → address via Nominatim ───────────────
