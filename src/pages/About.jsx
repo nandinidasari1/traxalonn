@@ -1,5 +1,47 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Shield, Target, Lock, Users, BookOpen, Award, Mic, Globe, ChevronDown, ChevronUp, Activity } from "lucide-react";
+{/*--animated counter--*/}
+function useCountUp(target, duration = 2000) {
+  const [count, setCount] = useState(0);
+  const ref = useRef(null);
+  const triggered = useRef(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !triggered.current) {
+          triggered.current = true;
+          let start = 0;
+          const step = target / (duration / 16);
+          const timer = setInterval(() => {
+            start += step;
+            if (start >= target) {
+              setCount(target);
+              clearInterval(timer);
+            } else {
+              setCount(Math.floor(start));
+            }
+          }, 16);
+        }
+      },
+      { threshold: 0.3 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [target, duration]);
+
+  return [count, ref];
+}
+
+function StatCard({ numericValue, suffix, label }) {
+  const [count, ref] = useCountUp(numericValue);
+  return (
+    <div ref={ref} className="bg-surface-elevated border border-surface-border rounded-2xl p-5 text-center hover:border-primary/40 transition-all">
+      <div className="font-display text-3xl text-primary mb-1">{count}{suffix}</div>
+      <div className="font-body text-xs text-text-muted uppercase tracking-wider">{label}</div>
+    </div>
+  );
+}
 
 export default function About() {
   const [expanded, setExpanded] = useState(false);
@@ -89,18 +131,10 @@ export default function About() {
       <div className="max-w-5xl mx-auto px-6 py-16 space-y-24">
 
         {/* ── Stats Row ── */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[
-            { value: "2,400+", label: "Verified Officers" },
-            { value: "18", label: "States Covered" },
-            { value: "100%", label: "Legal Compliant" },
-            { value: "24/7", label: "Surveillance Ready" },
-          ].map((s) => (
-            <div key={s.label} className="bg-surface-elevated border border-surface-border rounded-2xl p-5 text-center hover:border-primary/40 transition-all">
-              <div className="font-display text-3xl text-primary mb-1">{s.value}</div>
-              <div className="font-body text-xs text-text-muted uppercase tracking-wider">{s.label}</div>
-            </div>
-          ))}
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <StatCard numericValue={2400} suffix="+" label="Verified Officers" />
+        <StatCard numericValue={18} suffix="" label="States Covered" />
+        <StatCard numericValue={100} suffix="%" label="Legal Compliant" />
         </div>
 
         {/* ── Purpose Cards ── */}
