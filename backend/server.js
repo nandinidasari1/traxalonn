@@ -13,7 +13,7 @@ app.use(cors({
     origin: [
         "http://localhost:3000",
         "http://localhost:5173",
-        "https://traxalon-main-01.vercel.app",
+        "https://traxelon-main.vercel.app",
         // Add your Vercel URL here
     ],
     methods: ["GET", "POST", "OPTIONS"],
