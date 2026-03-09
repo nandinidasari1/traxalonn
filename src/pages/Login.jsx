@@ -2,10 +2,25 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { Shield, Mail, Lock, Eye, EyeOff } from "lucide-react";
-import { auth } from "../firebase/config";
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5001";
+
+function getPasswordStrength(password) {
+  if (!password) return null;
+  let score = 0;
+  if (password.length >= 8) score++;
+  if (password.length >= 12) score++;
+  if (/[A-Z]/.test(password)) score++;
+  if (/[0-9]/.test(password)) score++;
+  if (/[^A-Za-z0-9]/.test(password)) score++;
+  if (score <= 1) return { label: "Weak", color: "bg-red-500", textColor: "text-red-400", width: "w-1/4" };
+  if (score <= 2) return { label: "Fair", color: "bg-yellow-500", textColor: "text-yellow-400", width: "w-2/4" };
+  if (score <= 3) return { label: "Good", color: "bg-blue-500", textColor: "text-blue-400", width: "w-3/4" };
+  return { label: "Strong", color: "bg-green-500", textColor: "text-green-400", width: "w-full" };
+}
 
 export default function Login() {
-  const { login, resetPassword } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -61,12 +76,31 @@ export default function Login() {
   setLoading(false);
 }
 
+  // async function handleForgotPassword(e) {
+  //   e.preventDefault();
+  //   setForgotLoading(true);
+  //   setForgotStatus("");
+  //   try {
+  //     await resetPassword(forgotEmail);
+  //     setForgotStatus("success");
+  //   } catch (err) {
+  //     setForgotStatus("error");
+  //   }
+  //   setForgotLoading(false);
+  // }
+
   async function handleForgotPassword(e) {
     e.preventDefault();
     setForgotLoading(true);
     setForgotStatus("");
     try {
-      await resetPassword(forgotEmail);
+      const res = await fetch(`${BACKEND_URL}/api/auth/send-reset-email`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: forgotEmail }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to send reset email.");
       setForgotStatus("success");
     } catch (err) {
       setForgotStatus("error");
