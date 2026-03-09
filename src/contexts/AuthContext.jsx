@@ -170,7 +170,9 @@ import {
   sendPasswordResetEmail,
   confirmPasswordReset,
 } from "firebase/auth";
-import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
+import { doc, setDoc, getDoc, serverTimestamp,
+  collection, addDoc, query, where, 
+  orderBy, limit, getDocs, updateDoc } from "firebase/firestore";
 import { auth, db } from "../firebase/config";
 
 const AuthContext = createContext();
@@ -208,7 +210,15 @@ export function AuthProvider({ children }) {
 
     await setDoc(doc(db, "users", freshUser.uid), {
       lastSeen: serverTimestamp(),
+      isOnline: true
     }, { merge: true });
+
+    // ✅ Log every login as a new session
+  await addDoc(collection(db, "users", freshUser.uid, "sessions"), {
+    loginAt: serverTimestamp(),
+    logoutAt: null,
+    type: "login",
+  });
 
     setCurrentUser(freshUser);
     await fetchUserProfile(freshUser.uid);
@@ -216,6 +226,27 @@ export function AuthProvider({ children }) {
   }
 
   async function logout() {
+    if (currentUser) {
+    // ✅ Find the latest open session and close it
+    const sessionsRef = collection(db, "users", currentUser.uid, "sessions");
+    const q = query(
+      sessionsRef,
+      where("logoutAt", "==", null),
+      orderBy("loginAt", "desc"),
+      limit(1)
+    );
+    const snap = await getDocs(q);
+    if (!snap.empty) {
+      await updateDoc(snap.docs[0].ref, {
+        logoutAt: serverTimestamp(),
+      });
+    }
+
+    // Update user doc
+    await setDoc(doc(db, "users", currentUser.uid), {
+      isOnline: false,
+    }, { merge: true });
+  }
     setUserProfile(null);
     return signOut(auth);
   }
