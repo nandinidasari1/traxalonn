@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { Shield, Zap, Eye, Lock, Globe, ChevronRight, Activity } from "lucide-react";
@@ -26,12 +26,54 @@ const features = [
   },
 ];
 
-const stats = [
-  { value: "2,400+", label: "Active Officers" },
-  { value: "18,900+", label: "Suspects Tracked" },
-  { value: "94%", label: "Case Closure Rate" },
-  { value: "< 2s", label: "Capture Speed" },
+const statsConfig = [
+  { rawValue: 2400,  display: (n) => `${n.toLocaleString()}+`, label: "Active Officers" },
+  { rawValue: 18900, display: (n) => `${n.toLocaleString()}+`, label: "Suspects Tracked" },
+  { rawValue: 94,    display: (n) => `${n}%`,                  label: "Case Closure Rate" },
+  { rawValue: 2,     display: () => `< 2S`,                    label: "Capture Speed", noCount: true },
 ];
+
+function useCountUp(target, duration = 2000) {
+  const [count, setCount] = useState(0);
+  const [hasStarted, setHasStarted] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setHasStarted(true); },
+      { threshold: 0.3 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!hasStarted) return;
+    let startTime = null;
+    const step = (timestamp) => {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setCount(Math.floor(eased * target));
+      if (progress < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }, [hasStarted, target, duration]);
+
+  return { count, ref };
+}
+
+function StatCard({ rawValue, display, label, noCount }) {
+  const { count, ref } = useCountUp(rawValue, 2000);
+  return (
+    <div ref={ref} className="bg-surface-card border border-surface-border rounded-xl p-4">
+      <div className="font-display text-3xl text-primary">
+        {noCount ? display() : display(count)}
+      </div>
+      <div className="font-body text-xs text-text-muted mt-1 uppercase tracking-wider">{label}</div>
+    </div>
+  );
+}
 
 export default function Home() {
   const { currentUser } = useAuth();
@@ -148,13 +190,10 @@ export default function Home() {
           </div>
 
           <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-6">
-            {stats.map((s) => (
-              <div key={s.label} className="bg-surface-card border border-surface-border rounded-xl p-4">
-                <div className="font-display text-3xl text-primary">{s.value}</div>
-                <div className="font-body text-xs text-text-muted mt-1 uppercase tracking-wider">{s.label}</div>
-              </div>
-            ))}
-          </div>
+           {statsConfig.map((s) => (
+          <StatCard key={s.label} {...s} />
+          ))}
+         </div>
         </div>
       </section>
 

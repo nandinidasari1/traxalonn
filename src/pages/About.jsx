@@ -131,12 +131,25 @@ export default function About() {
       <div className="max-w-5xl mx-auto px-6 py-16 space-y-24">
 
         {/* ── Stats Row ── */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-        <StatCard numericValue={2400} suffix="+" label="Verified Officers" />
-        <StatCard numericValue={18} suffix="" label="States Covered" />
-        <StatCard numericValue={100} suffix="%" label="Legal Compliant" />
-        </div>
+        <div className="flex flex-col items-center gap-4">
 
+  {/* Top two boxes */}
+  <div className="grid grid-cols-2 md:grid-cols-3 gap-4 w-full max-w-5xl">
+    <StatCard numericValue={2400} suffix="+" label="Verified Officers" />
+    <StatCard numericValue={18} suffix="" label="States Covered" />
+
+    {/* Desktop third card */}
+    <div className="hidden md:block">
+      <StatCard numericValue={100} suffix="%" label="Legal Compliant" />
+    </div>
+  </div>
+
+  {/* Mobile centered card */}
+  <div className="md:hidden w-1/2">
+    <StatCard numericValue={100} suffix="%" label="Legal Compliant" />
+  </div>
+
+</div>
         {/* ── Purpose Cards ── */}
         <div>
           <div className="text-center mb-10">
@@ -298,7 +311,7 @@ export default function About() {
           <div className="flex gap-6">
             <a href="/" className="font-body text-xs text-text-muted hover:text-primary transition-colors">Home</a>
             <a href="/contact" className="font-body text-xs text-text-muted hover:text-primary transition-colors">Contact</a>
-        
+             <a href="/terms" className="font-body text-xs text-text-muted hover:text-primary transition-colors">Terms and Conditions</a>
           </div>
         </div>
       </footer>
