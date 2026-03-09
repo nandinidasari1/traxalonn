@@ -197,6 +197,7 @@ export function AuthProvider({ children }) {
       createdAt: serverTimestamp(),
       totalLinksGenerated: 0,
     });
+    await signOut(auth); 
     return user;
   }
 
