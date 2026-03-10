@@ -206,8 +206,8 @@ export default function TermsAndConditions() {
         <div className="bg-surface-elevated border border-surface-border rounded-2xl p-6 mt-4">
           <p className="font-body text-sm text-text-muted">
             For legal inquiries regarding these Terms, contact:{" "}
-            <a href="mailto:support@traxelon.com" className="text-primary hover:underline">
-              support@traxelon.com
+            <a href="mailto:support@traxalon.gov.in" className="text-primary hover:underline">
+              support@traxalon.gov.in
             </a>
             {" "}· Torsecure Cyber LLP ,Door No. 4-9-765/17, Second Floor, Manasa Towers, MG Road, Kodialbail, Mangalore, Karnataka
           </p>
