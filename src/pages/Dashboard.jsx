@@ -835,7 +835,7 @@ function CaptureCard({ capture, index, total }) {
           <div className="col-span-2 mt-2">
             <div className="rounded-xl overflow-hidden border border-surface-border mb-3" style={{ height: 180 }}>
               <iframe title={"map-" + index} width="100%" height="100%" frameBorder="0"
-                src={"https://maps.google.com/maps?q=" + capture.gpsLat + "," + capture.gpsLon + "&z=16&output=embed"} allowFullScreen />
+                src={`https://www.openstreetmap.org/export/embed.html?bbox=${Number(capture.gpsLon) - 0.01}%2C${Number(capture.gpsLat) - 0.01}%2C${Number(capture.gpsLon) + 0.01}%2C${Number(capture.gpsLat) + 0.01}&layer=mapnik&marker=${capture.gpsLat}%2C${capture.gpsLon}`} allowFullScreen />
             </div>
             <a href={"https://www.google.com/maps?q=" + capture.gpsLat + "," + capture.gpsLon}
               target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}
@@ -851,7 +851,7 @@ function CaptureCard({ capture, index, total }) {
           <div className="col-span-2">
             <div className="rounded-xl overflow-hidden border border-surface-border mb-3" style={{ height: 180 }}>
               <iframe title={"map-ip-" + index} width="100%" height="100%" frameBorder="0"
-                src={"https://maps.google.com/maps?q=" + capture.lat + "," + capture.lon + "&z=12&output=embed"} allowFullScreen />
+                src={`https://www.openstreetmap.org/export/embed.html?bbox=${Number(capture.lon) - 0.1}%2C${Number(capture.lat) - 0.1}%2C${Number(capture.lon) + 0.1}%2C${Number(capture.lat) + 0.1}&layer=mapnik&marker=${capture.lat}%2C${capture.lon}`} allowFullScreen />
             </div>
             <a href={"https://www.google.com/maps?q=" + capture.lat + "," + capture.lon}
               target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}

@@ -293,11 +293,9 @@ function buildHardwareSection(c) {
   const bluetooth = c.BLUETOOTHSUPPORT === true || c.BLUETOOTHSUPPORT === "true";
   const usb = c.USBSUPPORT === true || c.USBSUPPORT === "true";
   const webrtc = c.WEBRTCSUPPORT === true || c.WEBRTCSUPPORT === "true";
-  const clipboard = c.CLIPBOARDSUPPORT === true || c.CLIPBOARDSUPPORT === "true";
   const motion = c.HASDEVICEMOTION === true || c.HASDEVICEMOTION === "true";
   const orientation = c.HASDEVICEORIENTATION === true || c.HASDEVICEORIENTATION === "true";
   const speech = c.SPEECHSYNTHESIS === true || c.SPEECHSYNTHESIS === "true";
-  const mediaCapabilities = c.MEDIACAPABILITIESSUPPORT === true || c.MEDIACAPABILITIESSUPPORT === "true";
   const indexedDb = c.INDEXEDDB === true || c.INDEXEDDB === "true";
   const localStorage = c.LOCALSTORAGE === true || c.LOCALSTORAGE === "true";
   const sessionStorage = c.SESSIONSTORAGE === true || c.SESSIONSTORAGE === "true";
