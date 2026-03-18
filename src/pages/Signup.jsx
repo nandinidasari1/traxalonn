@@ -84,29 +84,37 @@ export default function Signup() {
   }
 
   async function handleVerifyAndCreate(e) {
-  e.preventDefault();
-  setError(""); setInfo("");
-  if (!otpValue || otpValue.length !== 6) return setError("Please enter the 6-digit OTP.");
-  setLoading(true);
-  try {
-    const res = await fetch(`${BACKEND_URL}/api/auth/verify-otp`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: form.email, otp: otpValue }),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "OTP verification failed.");
-    setStep("creating");
-    await signup(form.email, form.password, form.displayName, form.badgeId, form.department);
-    // Now sign them in since OTP already proved email ownership
-    await login(form.email, form.password);  // ← ADD THIS
-    navigate("/dashboard");
-  } catch (err) {
-    setStep("otp");
-    setError(err.message || "Verification failed. Please try again.");
+    e.preventDefault();
+    setError(""); setInfo("");
+    if (!otpValue || otpValue.length !== 6) return setError("Please enter the 6-digit OTP.");
+    setLoading(true);
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/auth/verify-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: form.email, otp: otpValue }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "OTP verification failed.");
+      setStep("creating");
+      // await signup(form.email, form.password, form.displayName, form.badgeId, form.department);
+      try {
+        await signup(form.email, form.password, form.displayName, form.badgeId, form.department);
+      } catch (err) {
+        setStep("otp");
+        setError(err.message); // ← shows "This account has been suspended..." if banned
+        setLoading(false);
+        return;
+      }
+      // Now sign them in since OTP already proved email ownership
+      await login(form.email, form.password);  // ← ADD THIS
+      navigate("/dashboard");
+    } catch (err) {
+      setStep("otp");
+      setError(err.message || "Verification failed. Please try again.");
+    }
+    setLoading(false);
   }
-  setLoading(false);
-}
 
   // ── Resend OTP ────────────────────────────────────────────────
   async function handleResendOtp() {
@@ -146,7 +154,7 @@ export default function Signup() {
             <p className="font-body text-sm text-text-secondary mt-2">
               {step === "form" ? "Create your secure Traxelon account"
                 : step === "creating" ? "Creating your account…"
-                : "Verify your email address"}
+                  : "Verify your email address"}
             </p>
             {step === "form" && (
               <div className="mt-3 inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-3 py-1 text-xs text-primary font-mono">
@@ -159,17 +167,15 @@ export default function Signup() {
           <div className="flex items-center gap-2 mb-6">
             {["form", "otp", "creating"].map((s, i) => (
               <React.Fragment key={s}>
-                <div className={`flex items-center gap-1.5 text-xs font-mono ${
-                  step === s ? "text-primary"
-                  : i < ["form","otp","creating"].indexOf(step) ? "text-green-500"
-                  : "text-text-muted"}`}>
-                  <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold border ${
-                    step === s ? "border-primary bg-primary/20 text-primary"
-                    : i < ["form","otp","creating"].indexOf(step) ? "border-green-500 bg-green-500/20 text-green-500"
-                    : "border-surface-border bg-surface text-text-muted"}`}>
-                    {i < ["form","otp","creating"].indexOf(step) ? "✓" : i + 1}
+                <div className={`flex items-center gap-1.5 text-xs font-mono ${step === s ? "text-primary"
+                  : i < ["form", "otp", "creating"].indexOf(step) ? "text-green-500"
+                    : "text-text-muted"}`}>
+                  <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold border ${step === s ? "border-primary bg-primary/20 text-primary"
+                    : i < ["form", "otp", "creating"].indexOf(step) ? "border-green-500 bg-green-500/20 text-green-500"
+                      : "border-surface-border bg-surface text-text-muted"}`}>
+                    {i < ["form", "otp", "creating"].indexOf(step) ? "✓" : i + 1}
                   </div>
-                  <span className="hidden sm:inline">{["Details","Verify","Account"][i]}</span>
+                  <span className="hidden sm:inline">{["Details", "Verify", "Account"][i]}</span>
                 </div>
                 {i < 2 && <div className="flex-1 h-px bg-surface-border" />}
               </React.Fragment>
@@ -230,10 +236,9 @@ export default function Signup() {
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted w-4 h-4" />
                   <input type={showConfirm ? "text" : "password"} name="confirmPassword" value={form.confirmPassword} onChange={handleChange}
                     placeholder="Repeat password" required
-                    className={`w-full bg-surface border rounded-lg pl-10 pr-10 py-3 font-body text-sm text-text-primary placeholder:text-text-muted focus:outline-none transition-colors ${
-                      form.confirmPassword && form.confirmPassword !== form.password ? "border-red-500 focus:border-red-500"
+                    className={`w-full bg-surface border rounded-lg pl-10 pr-10 py-3 font-body text-sm text-text-primary placeholder:text-text-muted focus:outline-none transition-colors ${form.confirmPassword && form.confirmPassword !== form.password ? "border-red-500 focus:border-red-500"
                       : form.confirmPassword && form.confirmPassword === form.password ? "border-green-500 focus:border-green-500"
-                      : "border-surface-border focus:border-primary"}`} />
+                        : "border-surface-border focus:border-primary"}`} />
                   <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-primary">
                     {showConfirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -247,25 +252,25 @@ export default function Signup() {
               </div>
 
               {/* Terms and Conditions */}
-<div className="flex items-start gap-3 mt-2">
-  <input
-    type="checkbox"
-    id="terms"
-    checked={termsAccepted}
-    onChange={(e) => setTermsAccepted(e.target.checked)}
-    className="mt-1 w-4 h-4 accent-primary cursor-pointer flex-shrink-0"
-  />
-  <label htmlFor="terms" className="font-body text-xs text-text-muted leading-relaxed cursor-pointer">
-    I agree to the{" "}
-    <a href="/terms" target="_blank" className="text-primary hover:underline">
-      Terms and Conditions
-    </a>{" "}
-    and{" "}
-    <a>
-      Privacy Policy
-    </a>. I confirm that I am an authorized law enforcement officer.
-  </label>
-</div>
+              <div className="flex items-start gap-3 mt-2">
+                <input
+                  type="checkbox"
+                  id="terms"
+                  checked={termsAccepted}
+                  onChange={(e) => setTermsAccepted(e.target.checked)}
+                  className="mt-1 w-4 h-4 accent-primary cursor-pointer flex-shrink-0"
+                />
+                <label htmlFor="terms" className="font-body text-xs text-text-muted leading-relaxed cursor-pointer">
+                  I agree to the{" "}
+                  <a href="/terms" target="_blank" rel="noreferrer" className="text-primary hover:underline">
+                    Terms and Conditions
+                  </a>{" "}
+                  and{" "}
+                  <a href="/privacy" target="_blank" rel="noreferrer" className="text-primary hover:underline">
+                    Privacy Policy
+                  </a>. I confirm that I am an authorized law enforcement officer.
+                </label>
+              </div>
 
               <button type="submit" disabled={submitDisabled}
                 className="w-full mt-2 px-6 py-3.5 bg-primary text-surface font-body font-bold rounded-lg hover:bg-primary-dark transition-all shadow-glow disabled:opacity-50 disabled:cursor-not-allowed">

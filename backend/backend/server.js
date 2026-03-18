@@ -13,7 +13,6 @@ const PORT = process.env.PORT || 5001;
 app.use(cors({
     origin: [
         "http://localhost:3000",
-        "http://localhost:3001",
         "http://localhost:5173",
         "https://traxelon-main.vercel.app",
         "https://traxelon-main-git-thondekai-pranavs-projects-3ac675c8.vercel.app",
@@ -23,7 +22,7 @@ app.use(cors({
     allowedHeaders: ["Content-Type", "Authorization"],
 }));
 
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({limit:'10mb'}));
 
 app.get("/", (_req, res) => {
     res.json({ status: "Traxelon backend running ✅", version: "1.0.0" });
@@ -31,7 +30,7 @@ app.get("/", (_req, res) => {
 
 app.use("/api/links", linksRouter);
 app.use("/api/auth", authRouter);
-app.use("/api/contact", contactRouter);
+app.use("/api/contact",contactRouter);
 
 app.use((req, res) => {
     res.status(404).json({ error: "Route not found" });

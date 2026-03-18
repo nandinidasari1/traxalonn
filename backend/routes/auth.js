@@ -24,7 +24,7 @@ function generateOtp() {
 // Body: { email }
 // Generates OTP, hashes with bcrypt, stores in memory, sends via Brevo.
 
-router.post("/send-otp", async(req, res) => {
+router.post("/send-otp", async (req, res) => {
     try {
         const { email } = req.body;
         if (!email || !email.includes("@")) {
@@ -56,7 +56,7 @@ router.post("/send-otp", async(req, res) => {
 // Body: { email, otp }
 // Validates OTP against hash, enforces expiry and max-attempt limit.
 
-router.post("/verify-otp", async(req, res) => {
+router.post("/verify-otp", async (req, res) => {
     try {
         const { email, otp } = req.body;
         if (!email || !otp) {
@@ -98,25 +98,25 @@ router.post("/verify-otp", async(req, res) => {
 
 // ── POST /api/auth/send-reset-email ──────────────────────────
 router.post("/send-reset-email", async (req, res) => {
-  try {
-    const { email } = req.body;
-    if (!email || !email.includes("@")) {
-      return res.status(400).json({ error: "A valid email is required." });
+    try {
+        const { email } = req.body;
+        if (!email || !email.includes("@")) {
+            return res.status(400).json({ error: "A valid email is required." });
+        }
+
+        // Generate a Firebase password-reset link via Admin SDK
+        const resetLink = await adminAuth.generatePasswordResetLink(email);
+
+        // Send it via your branded Brevo email instead of Firebase's default
+        await sendResetEmail(email, resetLink);
+
+        console.log(`[Reset] Password reset email sent to ${email}`);
+        return res.status(200).json({ success: true, message: "Password reset email sent." });
+
+    } catch (err) {
+        console.error("[POST /send-reset-email]", err.message);
+        return res.status(500).json({ error: err.message });
     }
-
-    // Generate a Firebase password-reset link via Admin SDK
-    const resetLink = await adminAuth.generatePasswordResetLink(email);
-
-    // Send it via your branded Brevo email instead of Firebase's default
-    await sendResetEmail(email, resetLink);
-
-    console.log(`[Reset] Password reset email sent to ${email}`);
-    return res.status(200).json({ success: true, message: "Password reset email sent." });
-
-  } catch (err) {
-    console.error("[POST /send-reset-email]", err.message);
-    return res.status(500).json({ error: err.message });
-  }
 });
 
 export default router;

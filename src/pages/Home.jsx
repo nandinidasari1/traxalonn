@@ -3,34 +3,11 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { Shield, Zap, Eye, Lock, Globe, ChevronRight, Activity } from "lucide-react";
 
-const features = [
-  {
-    icon: <Zap className="w-6 h-6" />,
-    title: "Instant Link Generation",
-    desc: "Generate disguised tracking links in seconds. Target sees a Paytm link; you get their full device fingerprint.",
-  },
-  {
-    icon: <Globe className="w-6 h-6" />,
-    title: "Full Device Intelligence",
-    desc: "Capture IP address, GPS coordinates, browser info, OS, ISP, device type — everything you need.",
-  },
-  {
-    icon: <Eye className="w-6 h-6" />,
-    title: "Real-Time Tracking",
-    desc: "Get notified the moment a suspect opens your link. View captured data instantly on your dashboard.",
-  },
-  {
-    icon: <Lock className="w-6 h-6" />,
-    title: "Encrypted & Secure",
-    desc: "All data is encrypted end-to-end. Only authorized officers with valid credentials can access captures.",
-  },
-];
-
 const statsConfig = [
-  { rawValue: 2400,  display: (n) => `${n.toLocaleString()}+`, label: "Active Officers" },
+  { rawValue: 2400, display: (n) => `${n.toLocaleString()}+`, label: "Active Officers" },
   { rawValue: 18900, display: (n) => `${n.toLocaleString()}+`, label: "Suspects Tracked" },
-  { rawValue: 94,    display: (n) => `${n}%`,                  label: "Case Closure Rate" },
-  { rawValue: 2,     display: () => `< 2S`,                    label: "Capture Speed", noCount: true },
+  { rawValue: 94, display: (n) => `${n}%`, label: "Case Closure Rate" },
+  { rawValue: 2, display: () => `< 2S`, label: "Capture Speed", noCount: true },
 ];
 
 function useCountUp(target, duration = 2000) {
@@ -142,11 +119,11 @@ export default function Home() {
 
         <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
           <div className="inline-flex items-center gap-2 bg-surface-card border border-primary/30 rounded-full px-5 py-2 mb-8">
-  <Activity className="w-3 h-3 text-primary flex-shrink-0" />
-  <span className="font-mono text-xs text-primary tracking-wider uppercase whitespace-nowrap">
-    Law Enforcement Intelligence Tool
-  </span>
-</div>
+            <Activity className="w-3 h-3 text-primary flex-shrink-0" />
+            <span className="font-mono text-xs text-primary tracking-wider uppercase whitespace-nowrap">
+              Law Enforcement Intelligence Tool
+            </span>
+          </div>
           <h1 className="font-display text-7xl md:text-9xl text-text-primary leading-none mb-6 tracking-wider">
             TRACK.<br />
             <span className="text-primary" style={{ textShadow: "0 0 40px rgba(0,212,255,0.5)" }}>
@@ -190,10 +167,10 @@ export default function Home() {
           </div>
 
           <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-6">
-           {statsConfig.map((s) => (
-          <StatCard key={s.label} {...s} />
-          ))}
-         </div>
+            {statsConfig.map((s) => (
+              <StatCard key={s.label} {...s} />
+            ))}
+          </div>
         </div>
       </section>
 
@@ -278,7 +255,7 @@ export default function Home() {
                   <span>█</span>
                 </div>
               </div>
-              
+
             </div>
           </div>
         </div>

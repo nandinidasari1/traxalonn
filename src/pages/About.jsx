@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Shield, Target, Lock, Users, BookOpen, Award, Mic, Globe, ChevronDown, ChevronUp, Activity } from "lucide-react";
-{/*--animated counter--*/}
+// animated counter
 function useCountUp(target, duration = 2000) {
   const [count, setCount] = useState(0);
   const ref = useRef(null);
@@ -133,23 +133,23 @@ export default function About() {
         {/* ── Stats Row ── */}
         <div className="flex flex-col items-center gap-4">
 
-  {/* Top two boxes */}
-  <div className="grid grid-cols-2 md:grid-cols-3 gap-4 w-full max-w-5xl">
-    <StatCard numericValue={2400} suffix="+" label="Verified Officers" />
-    <StatCard numericValue={18} suffix="" label="States Covered" />
+          {/* Top two boxes */}
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 w-full max-w-5xl">
+            <StatCard numericValue={2400} suffix="+" label="Verified Officers" />
+            <StatCard numericValue={18} suffix="" label="States Covered" />
 
-    {/* Desktop third card */}
-    <div className="hidden md:block">
-      <StatCard numericValue={100} suffix="%" label="Legal Compliant" />
-    </div>
-  </div>
+            {/* Desktop third card */}
+            <div className="hidden md:block">
+              <StatCard numericValue={100} suffix="%" label="Legal Compliant" />
+            </div>
+          </div>
 
-  {/* Mobile centered card */}
-  <div className="md:hidden w-1/2">
-    <StatCard numericValue={100} suffix="%" label="Legal Compliant" />
-  </div>
+          {/* Mobile centered card */}
+          <div className="md:hidden w-1/2">
+            <StatCard numericValue={100} suffix="%" label="Legal Compliant" />
+          </div>
 
-</div>
+        </div>
         {/* ── Purpose Cards ── */}
         <div>
           <div className="text-center mb-10">
@@ -311,7 +311,7 @@ export default function About() {
           <div className="flex gap-6">
             <a href="/" className="font-body text-xs text-text-muted hover:text-primary transition-colors">Home</a>
             <a href="/contact" className="font-body text-xs text-text-muted hover:text-primary transition-colors">Contact</a>
-             <a href="/terms" className="font-body text-xs text-text-muted hover:text-primary transition-colors">Terms and Conditions</a>
+            <a href="/terms" className="font-body text-xs text-text-muted hover:text-primary transition-colors">Terms and Conditions</a>
           </div>
         </div>
       </footer>

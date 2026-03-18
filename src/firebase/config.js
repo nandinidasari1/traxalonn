@@ -2,13 +2,14 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
+
 const firebaseConfig = {
-  apiKey: "AIzaSyDnZgChy8R3WoCCTDG2VPw19MYz7JRHDiw",
-  authDomain: "traxalon-baf10.firebaseapp.com",
-  projectId: "traxalon-baf10",
-  storageBucket: "traxalon-baf10.firebasestorage.app",
-  messagingSenderId: "76983184891",
-  appId: "1:76983184891:web:ee7592a8ceddd1ea54ef5e",
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
 };
 
 const app = initializeApp(firebaseConfig);
